@@ -31,7 +31,36 @@
 | 항목 | 내용 |
 |:---  |---  |
 | (1) 요구사항 정의 | *프로젝트를 완성하기 위해 필요한 요구사항을 설명하기에 가장 적합한 방법을 선택하여 기술* <br> 예) <br> - 기능별 상세 요구사항(또는 유스케이스) <br> - 설계 모델(클래스 다이어그램, 클래스 및 모듈 명세서) <br> - UI 분석/설계 모델 <br> - E-R 다이어그램/DB 설계 모델(테이블 구조) |
-| (2) 전체 시스템 구성 | 다음은 본 연구에서 사용하고자 하는 NAS 알고리즘을 도식화한 것이다. <br/> <br> &nbsp; __1.	Search space__ <br> Search space는 알고리즘이 탐색을 수행하는 공간을 의미한다. NAS는 이 공간 내에서 최적의 모델 아키텍처를 탐색한다. 탐색 공간은 탐색할 수 있는 모든 모델 구조들의 집합으로, 어떤 연산을 쓸지, 연산들이 어떻게 연결될지 등이 정의되어 있다. 본 연구에서는 다음과 같은 구성 요소를 포함한 탐색 공간을 정의한다: <br> -	Arbitrary Encoder-Decoder Attention <br> 모든 encoder layer 를 decoder가 자유롭게 참조할 수 있도록 한다. <br> -	Heterogeneous Transformer Layers <br> 각 layer 별로 hidden size, head 수, FFN 크기 등이 다르게 구성될 수 있어, 다양한 하드웨어 특성에 맞춘 유연한 아키텍처 설계가 가능하다. <br> -	Hyperparameter (QKV Dimension) <br> 각 하드웨어에 최적화된 qkv dim을 조정하도록 구현하면서 메모리 사이즈를 고려한 트랜스포머의 탐색이 가능하도록 한다.<br><br> &nbsp; __2.	Search Strategy__ <br> Search Strategy는 탐색 방법으로 Search space 내의 어떤 아키텍처를 선택할지 결정하는 전략이다. 탐색 방법으로는 강화학습, 진화 알고리즘, 그래디언트 방식 등 여러 알고리즘이 쓰인다. 본 연구에서는 Supertransformer라는 모든 Subtransformer들을 포함하는 큰 네트워크를 한 번 훈련시키고, 진화 알고리즘(Evolutionary Search)를 통해 하드웨어 latency가 가장 낮고 성능이 좋은 Subtransformer를 탐색한다. 또한, HPO(Hyperparameter Optimization)을 통해 하드웨어에 최적화된 qkv dim 구성을 선택할 수 있도록 한다.<br><br> &nbsp; __3.	Performance Estimation Strategy__ <br> Performance Estimation Strategy는 선택된 아키텍처의 성능을 평가하거나 추정하는 방법이다. 보통 NAS는 search strategy가 하나 혹은 여러 개의 후보 아키텍처를 추출하고, 이들의 성능을 예측한다. 본 연구에서는 다음과 같은 성능 추정 방법을 채택한다: <br> -	weight sharing <br> subtransformer의 개별 학습 없이 이미 학습된 supertransformer의 weight를 사용하여 빠른 성능 평가가 가능한다. <br> -	하드웨어 기반 Latency 측정<br> FLOPs 대신 실제 하드웨어에서의 지연시간을 측정하여 플랫폼 맞춤 성능 평가가 가능하다.  <br><br>✅ 실험 환경 구성<br><br> - 보드: ROCK Pi 5B (Rockchip RK3588 ARM SoC 기반 NPU 보드)<br> - 운영체제 (OS): Ubuntu 22.04 (aarch64), Debian (Radxa Rock 5B 이미지)<br> - 모델 아키텍처: Transformer 기반 구조 <br> - 사용 데이터셋: WMT’14 En-De, WMT’14 En-Fr, WMT’19 En-De, IWSLT’14 De-En<br> <details> <summary>파이썬 라이브러리 목록</summary> ``` rknn-toolkit2==2.3.0 rknn-toolkit-lite2==1.5.0 charset-normalizer==3.4.0 datasets==3.1.0 fast-histogram==0.13 flatbuffers==24.3.25 huggingface-hub==0.26.5 mpmath==1.3.0 multidict==6.1.0 multiprocess==0.70.16 numpy==1.24.4 onnx==1.14.1 onnxoptimizer==0.2.7 onnxruntime==1.16.0 opencv-python==4.10.0.84 packaging==24.2 pandas==2.0.3 safetensors==0.4.5 scipy==1.10.1 sympy==1.13.3 tokenizers==0.20.3 torch==2.4.1 torchdata==0.7.1 torchtext==0.15.2 torchvision==0.19.1 tqdm==4.67.1 transformers==4.46.3 ``` </details> |
+| (2) 전체 시스템 구성 | 다음은 본 연구에서 사용하고자 하는 NAS 알고리즘을 도식화한 것이다. <br/> <br> &nbsp; __1.	Search space__ <br> Search space는 알고리즘이 탐색을 수행하는 공간을 의미한다. NAS는 이 공간 내에서 최적의 모델 아키텍처를 탐색한다. 탐색 공간은 탐색할 수 있는 모든 모델 구조들의 집합으로, 어떤 연산을 쓸지, 연산들이 어떻게 연결될지 등이 정의되어 있다. 본 연구에서는 다음과 같은 구성 요소를 포함한 탐색 공간을 정의한다: <br> -	Arbitrary Encoder-Decoder Attention <br> 모든 encoder layer 를 decoder가 자유롭게 참조할 수 있도록 한다. <br> -	Heterogeneous Transformer Layers <br> 각 layer 별로 hidden size, head 수, FFN 크기 등이 다르게 구성될 수 있어, 다양한 하드웨어 특성에 맞춘 유연한 아키텍처 설계가 가능하다. <br> -	Hyperparameter (QKV Dimension) <br> 각 하드웨어에 최적화된 qkv dim을 조정하도록 구현하면서 메모리 사이즈를 고려한 트랜스포머의 탐색이 가능하도록 한다.<br><br> &nbsp; __2.	Search Strategy__ <br> Search Strategy는 탐색 방법으로 Search space 내의 어떤 아키텍처를 선택할지 결정하는 전략이다. 탐색 방법으로는 강화학습, 진화 알고리즘, 그래디언트 방식 등 여러 알고리즘이 쓰인다. 본 연구에서는 Supertransformer라는 모든 Subtransformer들을 포함하는 큰 네트워크를 한 번 훈련시키고, 진화 알고리즘(Evolutionary Search)를 통해 하드웨어 latency가 가장 낮고 성능이 좋은 Subtransformer를 탐색한다. 또한, HPO(Hyperparameter Optimization)을 통해 하드웨어에 최적화된 qkv dim 구성을 선택할 수 있도록 한다.<br><br> &nbsp; __3.	Performance Estimation Strategy__ <br> Performance Estimation Strategy는 선택된 아키텍처의 성능을 평가하거나 추정하는 방법이다. 보통 NAS는 search strategy가 하나 혹은 여러 개의 후보 아키텍처를 추출하고, 이들의 성능을 예측한다. 본 연구에서는 다음과 같은 성능 추정 방법을 채택한다: <br> -	weight sharing <br> subtransformer의 개별 학습 없이 이미 학습된 supertransformer의 weight를 사용하여 빠른 성능 평가가 가능한다. <br> -	하드웨어 기반 Latency 측정<br> FLOPs 대신 실제 하드웨어에서의 지연시간을 측정하여 플랫폼 맞춤 성능 평가가 가능하다.  <br><br>✅ 실험 환경 구성<br><br> - 보드: ROCK Pi 5B (Rockchip RK3588 ARM SoC 기반 NPU 보드)<br> - 운영체제 (OS): Ubuntu 22.04 (aarch64), Debian (Radxa Rock 5B 이미지)<br> - 모델 아키텍처: Transformer 기반 구조 <br> - 사용 데이터셋: WMT’14 En-De, WMT’14 En-Fr, WMT’19 En-De, IWSLT’14 De-En<br> <details> <summary>파이썬 라이브러리 목록</summary> 
+```
+rknn-toolkit2==2.3.0  
+rknn-toolkit-lite2==1.5.0  
+charset-normalizer==3.4.0  
+datasets==3.1.0  
+fast-histogram==0.13  
+flatbuffers==24.3.25  
+huggingface-hub==0.26.5  
+mpmath==1.3.0  
+multidict==6.1.0  
+multiprocess==0.70.16  
+numpy==1.24.4  
+onnx==1.14.1  
+onnxoptimizer==0.2.7  
+onnxruntime==1.16.0  
+opencv-python==4.10.0.84  
+packaging==24.2  
+pandas==2.0.3  
+safetensors==0.4.5  
+scipy==1.10.1  
+sympy==1.13.3  
+tokenizers==0.20.3  
+torch==2.4.1  
+torchdata==0.7.1  
+torchtext==0.15.2  
+torchvision==0.19.1  
+tqdm==4.67.1  
+transformers==4.46.3
+``` </details> |
 | (3) 주요엔진 및 기능 설계 | *프로젝트의 주요 기능 혹은 모듈의 설계내용에 대하여 기술한다 <br> SW 구조 그림에 있는 각 Module의 상세 구현내용을 자세히 기술한다.* |
 | (4) 주요 기능의 구현 | *<주요기능리스트>에 정의된 기능 중 최소 2개 이상에 대한 상세 구현내용을 기술한다.* |
 | (5) 기타 | 참고문헌:   Thomas Elsken, Jan Hendrik Metzen, Frank Hutter, "Neural Architecture Search: A Survey," arXiv preprint arXiv:1808.05377, 2019.    Hanrui Wang, Zhanghao Wu, Zhijian Liu, Han Cai, Ligeng Zhu, Chuang Gan, Song Han, "HAT: Hardware-Aware Transformers for Efficient Natural Language Processing," arXiv preprint arXiv:2005.14187, 2020. |
