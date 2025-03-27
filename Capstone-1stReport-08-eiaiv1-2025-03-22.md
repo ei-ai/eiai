@@ -78,8 +78,7 @@
   torchvision==0.19.1
   tqdm==4.67.1
   transformers==4.46.3
-  ```
- |
+  ``` |
 | (3) 주요엔진 및 기능 설계 | *프로젝트의 주요 기능 혹은 모듈의 설계내용에 대하여 기술한다 <br> SW 구조 그림에 있는 각 Module의 상세 구현내용을 자세히 기술한다.* |
 | (4) 주요 기능의 구현 | *<주요기능리스트>에 정의된 기능 중 최소 2개 이상에 대한 상세 구현내용을 기술한다.* |
 | (5) 기타 | 참고문헌:   Thomas Elsken, Jan Hendrik Metzen, Frank Hutter, "Neural Architecture Search: A Survey," arXiv preprint arXiv:1808.05377, 2019.    Hanrui Wang, Zhanghao Wu, Zhijian Liu, Han Cai, Ligeng Zhu, Chuang Gan, Song Han, "HAT: Hardware-Aware Transformers for Efficient Natural Language Processing," arXiv preprint arXiv:2005.14187, 2020. |
