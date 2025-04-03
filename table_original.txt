@@ -1,0 +1,24 @@
+D RKNN: [17:44:11.283] --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+D RKNN: [17:44:11.283]                                                         Network Layer Information Table                                                      
+D RKNN: [17:44:11.283] --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+D RKNN: [17:44:11.283] ID   OpType             DataType Target InputShape                               OutputShape            Cycles(DDR/NPU/Total)    RW(KB)       FullName        
+D RKNN: [17:44:11.283] --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+...
+D RKNN: [17:44:11.283] 205  Transpose          FLOAT16  NPU    (25,5,1,512)                             (25,512,1,5)           0/0/0                    200          Transpose:encoder_out_tp#7
+D RKNN: [17:44:11.283] 206  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.0/encoder_attn/MatMul_1
+D RKNN: [17:44:11.283] 207  Transpose          FLOAT16  CPU    (25,512,1,5)                             (5,512,1,25)           0/0/0                    125          Transpose:/model/layers.0/encoder_attn/Transpose_5
+D RKNN: [17:44:11.283] 208  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.0/encoder_attn/MatMul_2
+D RKNN: [17:44:11.283] 209  Transpose          FLOAT16  CPU    (25,512,1,5)                             (5,512,1,25)           0/0/0                    125          Transpose:/model/layers.0/encoder_attn/Transpose_4_output_0-rs_tp
+D RKNN: [17:44:11.283] 210  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.1/encoder_attn/MatMul_1
+D RKNN: [17:44:11.283] 211  Transpose          FLOAT16  CPU    (25,512,1,5)                             (5,512,1,25)           0/0/0                    125          Transpose:/model/layers.1/encoder_attn/Transpose_5
+D RKNN: [17:44:11.283] 212  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.1/encoder_attn/MatMul_2
+D RKNN: [17:44:11.283] 213  Transpose          FLOAT16  CPU    (25,512,1,5)                             (5,512,1,25)           0/0/0                    125          Transpose:/model/layers.1/encoder_attn/Transpose_4_output_0-rs_tp
+D RKNN: [17:44:11.283] 214  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.3/encoder_attn/MatMul_1
+D RKNN: [17:44:11.283] 215  Transpose          FLOAT16  CPU    (25,512,1,5)                             (5,512,1,25)           0/0/0                    125          Transpose:/model/layers.3/encoder_attn/Transpose_5
+D RKNN: [17:44:11.283] 216  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.3/encoder_attn/MatMul_2
+D RKNN: [17:44:11.283] 217  Transpose          FLOAT16  CPU    (25,512,1,5)                             (5,512,1,25)           0/0/0                    125          Transpose:/model/layers.3/encoder_attn/Transpose_4_output_0-rs_tp
+D RKNN: [17:44:11.283] 218  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.5/encoder_attn/MatMul_1
+D RKNN: [17:44:11.283] 219  Transpose          FLOAT16  CPU    (25,512,1,5)                             (5,512,1,25)           0/0/0                    125          Transpose:/model/layers.5/encoder_attn/Transpose_5
+D RKNN: [17:44:11.283] 220  Conv               FLOAT16  NPU    (25,512,1,5),(512,512,1,1)               (25,512,1,5)           32988/204800/204800      637          Conv:/model/layers.5/encoder_attn/MatMul_2
+D RKNN: [17:44:11.283] 221  Reshape            FLOAT16  NPU    (5,512,1,25),(4)                         (10,256,1,25)          0/0/0                    125          Reshape:/model/layers.0/encoder_attn/Reshape_1_output_0_rs
+...
